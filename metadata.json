@@ -1,0 +1,8 @@
+{
+  "name": "FutureFarm OS",
+  "description": "Village crop intelligence \u0026 predictive decision OS to help farmers grow what the future needs.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

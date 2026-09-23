@@ -1,0 +1,136 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Market Items ---
+    function isValidMarketItem(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 200 &&
+             data.category is string && data.category.size() <= 100 &&
+             data.farmerName is string && data.farmerName.size() > 0 && data.farmerName.size() <= 150 &&
+             data.pricePerKg is number && data.pricePerKg >= 0 &&
+             data.availableKg is number && data.availableKg >= 0;
+    }
+
+    match /market_items/{itemId} {
+      allow read: if true;
+      allow create: if isValidId(itemId) && isValidMarketItem(incoming());
+      allow update: if isValidId(itemId) && isValidMarketItem(incoming());
+      allow delete: if isValidId(itemId);
+    }
+
+    // --- Market Orders ---
+    function isValidMarketOrder(data) {
+      return data.itemId is string && data.itemId.size() <= 128 &&
+             data.itemName is string && data.itemName.size() <= 200 &&
+             data.buyerName is string && data.buyerName.size() > 0 && data.buyerName.size() <= 150 &&
+             data.quantityKg is number && data.quantityKg > 0 &&
+             data.totalAmountInr is number && data.totalAmountInr >= 0 &&
+             data.status is string && data.status.size() <= 100;
+    }
+
+    match /market_orders/{orderId} {
+      allow read: if true;
+      allow create: if isValidId(orderId) && isValidMarketOrder(incoming());
+      allow update: if isValidId(orderId) && isValidMarketOrder(incoming());
+      allow delete: if isValidId(orderId);
+    }
+
+    // --- Smart Storage SAC Receipts ---
+    function isValidStorageReceipt(data) {
+      return data.receiptId is string && data.receiptId.size() > 0 && data.receiptId.size() <= 100 &&
+             data.farmerName is string && data.farmerName.size() > 0 && data.farmerName.size() <= 150 &&
+             data.cropType is string && data.cropType.size() > 0 && data.cropType.size() <= 150 &&
+             data.quantityKg is number && data.quantityKg >= 0 &&
+             data.status is string && data.status.size() <= 100;
+    }
+
+    match /storage_receipts/{receiptId} {
+      allow read: if true;
+      allow create: if isValidId(receiptId) && isValidStorageReceipt(incoming());
+      allow update: if isValidId(receiptId) && isValidStorageReceipt(incoming());
+      allow delete: if isValidId(receiptId);
+    }
+
+    // --- Crop Registrations ---
+    function isValidCropRegistration(data) {
+      return data.villageId is string && data.villageId.size() > 0 && data.villageId.size() <= 150 &&
+             data.plannedCrop is string && data.plannedCrop.size() > 0 && data.plannedCrop.size() <= 150 &&
+             data.landSizeAcres is number && data.landSizeAcres > 0;
+    }
+
+    match /crop_registrations/{registrationId} {
+      allow read: if true;
+      allow create: if isValidId(registrationId) && isValidCropRegistration(incoming());
+      allow update: if isValidId(registrationId) && isValidCropRegistration(incoming());
+      allow delete: if isValidId(registrationId);
+    }
+
+    // --- Digital Twin Farms ---
+    function isValidDigitalTwin(data) {
+      return data.ownerName is string && data.ownerName.size() > 0 && data.ownerName.size() <= 150 &&
+             data.farmName is string && data.farmName.size() > 0 && data.farmName.size() <= 200 &&
+             data.totalAreaAcres is number && data.totalAreaAcres > 0;
+    }
+
+    match /digital_twins/{farmId} {
+      allow read: if true;
+      allow create: if isValidId(farmId) && isValidDigitalTwin(incoming());
+      allow update: if isValidId(farmId) && isValidDigitalTwin(incoming());
+      allow delete: if isValidId(farmId);
+    }
+
+    // --- Farm Season Logs ---
+    function isValidFarmLog(data) {
+      return data.seasonName is string && data.seasonName.size() > 0 && data.seasonName.size() <= 150 &&
+             data.cropGrown is string && data.cropGrown.size() > 0 && data.cropGrown.size() <= 150 &&
+             data.acresPlanted is number && data.acresPlanted > 0;
+    }
+
+    match /farm_logs/{logId} {
+      allow read: if true;
+      allow create: if isValidId(logId) && isValidFarmLog(incoming());
+      allow update: if isValidId(logId) && isValidFarmLog(incoming());
+      allow delete: if isValidId(logId);
+    }
+
+    // --- Farmer Knowledge Vault ---
+    function isValidKnowledgeEntry(data) {
+      return data.title is string && data.title.size() > 0 && data.title.size() <= 200 &&
+             data.author is string && data.author.size() > 0 && data.author.size() <= 150 &&
+             data.content is string && data.content.size() > 0 && data.content.size() <= 3000;
+    }
+
+    match /knowledge_vault/{entryId} {
+      allow read: if true;
+      allow create: if isValidId(entryId) && isValidKnowledgeEntry(incoming());
+      allow update: if isValidId(entryId) && isValidKnowledgeEntry(incoming());
+      allow delete: if isValidId(entryId);
+    }
+
+    // Test connection doc
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}

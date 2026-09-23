@@ -1,0 +1,193 @@
+{
+  "entities": {
+    "MarketItem": {
+      "title": "MarketItem",
+      "description": "Direct farm produce listing available on the marketplace.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "enum": ["Fruits", "Vegetables", "Pulses", "Cereals", "Organic Products"] },
+        "farmerName": { "type": "string", "maxLength": 150 },
+        "farmerContact": { "type": "string", "maxLength": 50 },
+        "location": { "type": "string", "maxLength": 200 },
+        "pricePerKg": { "type": "number" },
+        "availableKg": { "type": "number" },
+        "grade": { "type": "string", "enum": ["A+", "A", "B"] },
+        "storageVerified": { "type": "boolean" },
+        "sacReceiptId": { "type": "string", "maxLength": 100 },
+        "image": { "type": "string", "maxLength": 1000 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "farmerUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "maxLength": 100 },
+        "updatedAt": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["name", "category", "farmerName", "pricePerKg", "availableKg"]
+    },
+    "MarketOrder": {
+      "title": "MarketOrder",
+      "description": "Real buyer order placed for direct farm produce.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "itemId": { "type": "string", "maxLength": 128 },
+        "itemName": { "type": "string", "maxLength": 200 },
+        "buyerName": { "type": "string", "maxLength": 150 },
+        "buyerContact": { "type": "string", "maxLength": 50 },
+        "deliveryAddress": { "type": "string", "maxLength": 500 },
+        "quantityKg": { "type": "number" },
+        "pricePerKg": { "type": "number" },
+        "totalAmountInr": { "type": "number" },
+        "status": { "type": "string", "enum": ["Order Placed", "Warehouse QC Verified", "In Cold-Chain Transit", "Delivered", "Cancelled"] },
+        "trackingCode": { "type": "string", "maxLength": 100 },
+        "carrierName": { "type": "string", "maxLength": 150 },
+        "buyerUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "maxLength": 100 },
+        "updatedAt": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["itemId", "itemName", "buyerName", "quantityKg", "totalAmountInr", "status"]
+    },
+    "StorageReceipt": {
+      "title": "StorageReceipt",
+      "description": "Smart Storage SAC receipt and cold preservation telemetry record.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "receiptId": { "type": "string", "maxLength": 100 },
+        "farmerName": { "type": "string", "maxLength": 150 },
+        "village": { "type": "string", "maxLength": 200 },
+        "cropType": { "type": "string", "maxLength": 150 },
+        "variety": { "type": "string", "maxLength": 150 },
+        "quantityKg": { "type": "number" },
+        "depositDate": { "type": "string", "maxLength": 100 },
+        "expiryDate": { "type": "string", "maxLength": 100 },
+        "grade": { "type": "string", "enum": ["A+", "A", "B"] },
+        "hubLocation": { "type": "string", "maxLength": 250 },
+        "chamberType": { "type": "string", "maxLength": 150 },
+        "temperature": { "type": "number" },
+        "humidity": { "type": "number" },
+        "ethylenePpm": { "type": "number" },
+        "spoilageRiskPct": { "type": "number" },
+        "shelfLifeDays": { "type": "number" },
+        "sacTagId": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["In Storage (Safe)", "Listed on Market", "Sold & Dispatched", "Withdrawn by Farmer"] },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "farmerUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "maxLength": 100 },
+        "updatedAt": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["receiptId", "farmerName", "cropType", "quantityKg", "status"]
+    },
+    "CropRegistration": {
+      "title": "CropRegistration",
+      "description": "Farmer crop sowing intent registered on village intelligence map.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "villageId": { "type": "string", "maxLength": 128 },
+        "villageName": { "type": "string", "maxLength": 150 },
+        "farmerAlias": { "type": "string", "maxLength": 150 },
+        "plannedCrop": { "type": "string", "maxLength": 150 },
+        "landSizeAcres": { "type": "number" },
+        "expectedHarvestDate": { "type": "string", "maxLength": 100 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "farmerUid": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["villageName", "plannedCrop", "landSizeAcres"]
+    },
+    "DigitalTwinFarm": {
+      "title": "DigitalTwinFarm",
+      "description": "Virtual farm replica state and soil telemetry.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "ownerName": { "type": "string", "maxLength": 150 },
+        "farmName": { "type": "string", "maxLength": 200 },
+        "villageName": { "type": "string", "maxLength": 200 },
+        "totalAcres": { "type": "number" },
+        "soilType": { "type": "string", "maxLength": 150 },
+        "soilHealthIndex": { "type": "number" },
+        "organicCarbonPct": { "type": "number" },
+        "nitrogenKgPerHa": { "type": "number" },
+        "phosphorusKgPerHa": { "type": "number" },
+        "potassiumKgPerHa": { "type": "number" },
+        "phLevel": { "type": "number" },
+        "twinIntelligenceScore": { "type": "number" },
+        "userId": { "type": "string", "maxLength": 128 },
+        "updatedAt": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["ownerName", "farmName", "totalAcres"]
+    },
+    "FarmSeasonLog": {
+      "title": "FarmSeasonLog",
+      "description": "Historical season yield, financial, and irrigation log for digital twin.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "farmId": { "type": "string", "maxLength": 128 },
+        "seasonName": { "type": "string", "maxLength": 150 },
+        "cropGrown": { "type": "string", "maxLength": 150 },
+        "acresPlanted": { "type": "number" },
+        "yieldObtainedTons": { "type": "number" },
+        "totalExpensesInr": { "type": "number" },
+        "totalIncomeInr": { "type": "number" },
+        "netProfitInr": { "type": "number" },
+        "rainfallMm": { "type": "number" },
+        "primaryIrrigationMethod": { "type": "string", "maxLength": 150 },
+        "keyLearnings": { "type": "string", "maxLength": 1500 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["seasonName", "cropGrown", "acresPlanted"]
+    },
+    "KnowledgeEntry": {
+      "title": "KnowledgeEntry",
+      "description": "Farmer community wisdom, tips, and voice notes.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "maxLength": 100 },
+        "authorName": { "type": "string", "maxLength": 150 },
+        "village": { "type": "string", "maxLength": 200 },
+        "content": { "type": "string", "maxLength": 3000 },
+        "tags": { "type": "string", "maxLength": 500 },
+        "upvotes": { "type": "number" },
+        "userId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["title", "authorName", "content"]
+    }
+  },
+  "firestore": {
+    "/market_items/{itemId}": {
+      "schema": "MarketItem",
+      "description": "Collection of direct farm market produce listings."
+    },
+    "/market_orders/{orderId}": {
+      "schema": "MarketOrder",
+      "description": "Collection of purchase orders placed by buyers."
+    },
+    "/storage_receipts/{receiptId}": {
+      "schema": "StorageReceipt",
+      "description": "Collection of Smart Storage SAC warehouse receipts and live sensor telemetry."
+    },
+    "/crop_registrations/{registrationId}": {
+      "schema": "CropRegistration",
+      "description": "Collection of farmer crop registrations on the intelligence map."
+    },
+    "/digital_twins/{farmId}": {
+      "schema": "DigitalTwinFarm",
+      "description": "Collection of digital twin farms."
+    },
+    "/farm_logs/{logId}": {
+      "schema": "FarmSeasonLog",
+      "description": "Collection of seasonal logs for digital twin farms."
+    },
+    "/knowledge_vault/{entryId}": {
+      "schema": "KnowledgeEntry",
+      "description": "Collection of farmer knowledge vault entries."
+    }
+  }
+}
